@@ -2,7 +2,12 @@ package com.demo.system.bars;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.ComponentName;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
+import android.util.Log;
 import android.view.View;
 
 import com.demo.system.bars.utils.ScreenUtils;
@@ -13,6 +18,8 @@ import com.demo.system.bars.utils.ScreenUtils;
  * Created by yangzhanshan on 2019-11-20.
  */
 public class MainActivity extends AppCompatActivity {
+
+    private static final String TAG = "MainActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,5 +50,29 @@ public class MainActivity extends AppCompatActivity {
                 ScreenUtils.setSystemBarsVisible(this, false);
                 break;
         }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.i(TAG, "onStart: is run.");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.i(TAG, "onResume: is run.");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.i(TAG, "onPause: is run.");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.i(TAG, "onStop: is run.");
     }
 }
