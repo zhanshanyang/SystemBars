@@ -2,15 +2,19 @@ package com.demo.system.bars;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.ComponentName;
 import android.content.Intent;
-import android.content.ServiceConnection;
+import android.content.pm.ShortcutInfo;
+import android.content.pm.ShortcutManager;
+import android.graphics.drawable.Icon;
 import android.os.Bundle;
-import android.os.IBinder;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 
 import com.demo.system.bars.utils.ScreenUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Copyright (C) 2019-11-20 Unicorn, Inc.
@@ -20,10 +24,12 @@ import com.demo.system.bars.utils.ScreenUtils;
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
+    private ShortcutManager mShortcutManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mShortcutManager = (ShortcutManager) getSystemService(SHORTCUT_SERVICE);
         setContentView(R.layout.activity_main);
         ScreenUtils.setPagFullScreen(this, true);
         ScreenUtils.hideActionbar(this);
@@ -52,6 +58,60 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private static final String SHORTCUT_ID = "shortcut_id";
+    private static final String SHORTCUT_ID1 = "shortcut_id1";
+    private static final String SHORTCUT_ID2 = "shortcut_id2";
+    //点击按钮生成相应的捷径
+    public void btnClickSC(View view) {
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.setAction(Intent.ACTION_VIEW);
+        switch (view.getId()) {
+            case R.id.btn_shortcut:
+                ShortcutInfo shortcutInfo = new ShortcutInfo.Builder(this, SHORTCUT_ID)
+                        .setShortLabel("ShortLabel")
+                        .setIntent(intent)
+                        .build();
+                addOrRemoveShortCut(shortcutInfo);
+                break;
+            case R.id.btn_shortcut_txt:
+                ShortcutInfo shortcutInfo1 = new ShortcutInfo.Builder(this, SHORTCUT_ID1)
+                        .setShortLabel("ShortLabel")
+                        .setLongLabel("随便看看")
+                        .setIntent(intent)
+                        .build();
+                addOrRemoveShortCut(shortcutInfo1);
+                break;
+            case R.id.btn_shortcut_pic:
+                ShortcutInfo shortcutInfo2 = new ShortcutInfo.Builder(this, SHORTCUT_ID2)
+                        .setShortLabel("ShortLabel")
+                        .setIcon(Icon.createWithResource(this, R.drawable.tmp))
+                        .setIntent(intent)
+                        .build();
+                addOrRemoveShortCut(shortcutInfo2);
+                break;
+        }
+    }
+
+    private void addOrRemoveShortCut(ShortcutInfo info) {
+        List<ShortcutInfo> dynamicShortcuts = mShortcutManager.getDynamicShortcuts();
+        boolean isExist = false;
+        for (ShortcutInfo item : dynamicShortcuts) {
+            if (TextUtils.equals(info.getId(), item.getId())) {
+                isExist = true;
+            }
+        }
+        if (isExist) {
+            List<String> ids = new ArrayList<>();
+            ids.add(info.getId());
+            mShortcutManager.removeDynamicShortcuts(ids);
+        } else {
+            List<ShortcutInfo> infos = new ArrayList<>();
+            infos.add(info);
+            mShortcutManager.addDynamicShortcuts(infos);
+        }
+
+    }
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -74,5 +134,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         Log.i(TAG, "onStop: is run.");
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        Log.i(TAG, "onWindowFocusChanged: is run.hasFocus:" + hasFocus);
     }
 }
