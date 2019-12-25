@@ -97,8 +97,6 @@ public class ScreenUtils {
                     | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
             uiFlags |= View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
             activity.getWindow().getDecorView().setSystemUiVisibility(uiFlags);
-
-            activity.getWindow().getDecorView().getSystemUiVisibility();
         }
     }
 
@@ -134,7 +132,8 @@ public class ScreenUtils {
     public static void setPagFullScreen(Activity activity, boolean show) {
         if (show) {
             int uiFlags = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                    | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
+                    | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                    | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
             activity.getWindow().getDecorView().setSystemUiVisibility(uiFlags);
             activity.getWindow().setStatusBarColor(Color.TRANSPARENT);
         } else {
